@@ -1,0 +1,26 @@
+apiVersion: apps/v1
+kind: DaemonSet
+metadata:
+  name: null-device-plugin
+  namespace: kube-system
+spec:
+  selector:
+    matchLabels:
+      app: null-device-plugin
+  template:
+    metadata:
+      labels:
+        app: null-device-plugin
+    spec:
+      hostNetwork: true
+      containers:
+        - image: 10.27.44.1:5000/null-device-plugin
+          imagePullPolicy: Always
+          name: null-device-plugin
+          volumeMounts:
+            - name: device-plugin
+              mountPath: /var/lib/kubelet/device-plugins
+      volumes:
+        - name: device-plugin
+          hostPath:
+            path: /var/lib/kubelet/device-plugins
