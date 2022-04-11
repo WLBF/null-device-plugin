@@ -1,6 +1,7 @@
 package main
 
 import (
+	"fmt"
 	"google.golang.org/grpc/credentials/insecure"
 	"log"
 	"net"
@@ -196,7 +197,15 @@ func (m *NullDevicePlugin) GetPreferredAllocation(ctx context.Context, r *plugin
 
 // Allocate which return list of devices.
 func (m *NullDevicePlugin) Allocate(ctx context.Context, reqs *pluginapi.AllocateRequest) (*pluginapi.AllocateResponse, error) {
-	return &pluginapi.AllocateResponse{}, nil
+	// return empty AllocateResponse will cause kubelet error
+	return &pluginapi.AllocateResponse{
+		ContainerResponses: []*pluginapi.ContainerAllocateResponse{{
+			Envs:        map[string]string{},
+			Mounts:      []*pluginapi.Mount{},
+			Devices:     []*pluginapi.DeviceSpec{},
+			Annotations: map[string]string{},
+		}},
+	}, nil
 }
 
 // PreStartContainer is unimplemented for this plugin
