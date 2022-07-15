@@ -2,6 +2,7 @@ package main
 
 import (
 	"fmt"
+	"github.com/WLBF/null-device-plugin/plugin"
 	"log"
 	"os"
 	"syscall"
@@ -31,7 +32,7 @@ func start() error {
 	log.Println("Starting OS watcher.")
 	sigs := newOSWatcher(syscall.SIGHUP, syscall.SIGINT, syscall.SIGTERM, syscall.SIGQUIT)
 
-	var plugins []*NullDevicePlugin
+	var plugins []plugin.DevicePlugin
 restart:
 	// If we are restarting, idempotently stop any running plugins before
 	// recreating them below.
@@ -39,7 +40,9 @@ restart:
 		p.Stop()
 	}
 
-	plugins = []*NullDevicePlugin{NewNullDevicePlugin("example.com/null", pluginapi.DevicePluginPath+"example-null.sock")}
+	plugins = []plugin.DevicePlugin{
+		plugin.NewNullDevicePlugin("example.com/null", pluginapi.DevicePluginPath+"example-null.sock"),
+	}
 
 	// Loop through all plugins, starting them if they have any devices
 	// to serve. If even one plugin fails to start properly, try

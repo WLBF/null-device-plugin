@@ -1,7 +1,6 @@
-package main
+package plugin
 
 import (
-	"fmt"
 	"google.golang.org/grpc/credentials/insecure"
 	"log"
 	"net"
